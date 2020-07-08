@@ -34,11 +34,10 @@ pub struct Transaction<'a, 'b> {
 lazy_static! {
     static ref SCHEMAS: HashMap<String, String> = {
         let mut map = HashMap::new();
-        let schemas_path = format!("{}/resources/schemas.csv", env!("CARGO_MANIFEST_DIR"));
+        let schemas = include_str!("../resources/schemas.csv");
         let mut schemas_csv = ReaderBuilder::new()
             .has_headers(false)
-            .from_path(schemas_path)
-            .expect("Failed to open schemas.csv. Does edi/resources/schemas.csv exist?");
+            .from_reader(schemas.as_bytes());
         for record in schemas_csv.records() {
             let record = record.unwrap();
             map.insert(record[0].to_string(), record[1].to_string());
